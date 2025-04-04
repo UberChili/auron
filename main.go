@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/UberChili/auron/api"
+	"github.com/fatih/color"
 )
 
 func main() {
@@ -25,7 +26,12 @@ func main() {
 	}
 
 	for i, result := range response.Results {
-		fmt.Printf("%d %s  %s\n   %s\n", i+1, result.Name, result.Version, result.Description)
+		color.New(color.FgRed).Fprintf(os.Stdout, "%d ", i+1)
+		fmt.Fprintf(os.Stdout, "aur/")
+		color.New(color.Bold).Fprintf(os.Stdout, "%s\n", result.Name)
+		// color.New(color.FgCyan).Fprintf(os.Stdout, "%s\n", result.Name)
+
+		// fmt.Printf("%s  %s\n   %s\n", result.Name, result.Version, result.Description)
 	}
 
 }
