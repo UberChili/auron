@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/UberChili/auron/api"
@@ -19,11 +18,14 @@ func main() {
 		packageName = args[1]
 	}
 
-	// Make API call to search for package
-	data, err := api.FetchData(packageName)
+	response, err := api.SearchPackage(packageName)
 	if err != nil {
-		log.Fatalf("Error fetching data: %v", err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 
-	fmt.Println("API Response: ", data)
+	for i, result := range response.Results {
+		fmt.Printf("%d %s  %s\n   %s\n", i+1, result.Name, result.Version, result.Description)
+	}
+
 }

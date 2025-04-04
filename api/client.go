@@ -1,33 +1,55 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
-
-	"github.com/gin-gonic/gin"
 )
 
-// searches for a package
-func searchPackage(packageName string, c *gin.Context) {
-	url := ""
+const SINGLE_TERM_SEARCH_URL = "https://aur.archlinux.org/rpc/v5/search/"
+
+type results struct {
+	Resultcount int        `json:"resultcount"`
+	Results     []PckgInfo `json:"results"`
+	Type        string     `json:"type"`
 }
 
-func FetchData(url string) (string, error) {
-	resp, err := http.Get(url)
+type PckgInfo struct {
+	Description string `json:"Description"`
+	ID          int    `json:"ID"`
+	Name        string `json:"Name"`
+	Url         string `json:"URL"`
+	Version     string `json:"Version"`
+}
+
+// searches for a package
+func SearchPackage(packageName string) (*results, error) {
+	client := &http.Client{}
+
+	req, err := http.NewRequest("GET", SINGLE_TERM_SEARCH_URL+packageName, nil)
 	if err != nil {
-		return "", err
+		return nil, err
+	}
+
+	q := req.URL.Query()
+	q.Add("by", "name")
+	req.URL.RawQuery = q.Encode()
+
+	req.Header.Add("accept", "application/json")
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("failed to fetch data, status code: %d", resp.StatusCode)
+		return nil, fmt.Errorf("Failed to fetch results. Status code %d\n", resp.StatusCode)
 	}
 
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
+	var results results
+	if err := json.NewDecoder(resp.Body).Decode(&results); err != nil {
+		return nil, err
 	}
 
-	return string(body), nil
+	return &results, nil
 }
