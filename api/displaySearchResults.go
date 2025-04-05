@@ -14,11 +14,11 @@ func DisplayResults(searchRes *SearchResponse) {
 		return
 	}
 
+	// pretty print results
 	for i, res := range searchRes.Results {
 		color.New(color.FgHiMagenta).Fprintf(os.Stdout, "%d ", i+1)
 		fmt.Fprintf(os.Stdout, "aur/")
-		color.New(color.Bold).Fprintf(os.Stdout, "%s\n", res.Name)
-		// color.New(color.FgCyan).Fprintf(os.Stdout, "%s\n", result.Name)
-		// fmt.Printf("%s  %s\n   %s\n", result.Name, result.Version, result.Description)
+		color.New(color.Bold).Fprintf(os.Stdout, "%s ", res.Name)
+		color.New(color.FgGreen).Fprintf(os.Stdout, "%s\n", res.Version)
 	}
 }

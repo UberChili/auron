@@ -32,7 +32,7 @@ func SearchPackage(packageName string) (*SearchResponse, error) {
 	}
 
 	q := req.URL.Query()
-	q.Add("by", "name")
+	q.Add("by", "name-desc")
 	req.URL.RawQuery = q.Encode()
 
 	req.Header.Add("accept", "application/json")
