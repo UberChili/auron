@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/UberChili/auron/api"
-	"github.com/fatih/color"
 )
 
 func main() {
@@ -25,13 +24,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	for i, result := range response.Results {
-		color.New(color.FgRed).Fprintf(os.Stdout, "%d ", i+1)
-		fmt.Fprintf(os.Stdout, "aur/")
-		color.New(color.Bold).Fprintf(os.Stdout, "%s\n", result.Name)
-		// color.New(color.FgCyan).Fprintf(os.Stdout, "%s\n", result.Name)
-
-		// fmt.Printf("%s  %s\n   %s\n", result.Name, result.Version, result.Description)
-	}
-
+	// Only list the search results, for now
+	api.DisplayResults(response)
 }

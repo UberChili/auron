@@ -8,7 +8,7 @@ import (
 
 const SINGLE_TERM_SEARCH_URL = "https://aur.archlinux.org/rpc/v5/search/"
 
-type results struct {
+type SearchResponse struct {
 	Resultcount int        `json:"resultcount"`
 	Results     []PckgInfo `json:"results"`
 	Type        string     `json:"type"`
@@ -23,7 +23,7 @@ type PckgInfo struct {
 }
 
 // searches for a package
-func SearchPackage(packageName string) (*results, error) {
+func SearchPackage(packageName string) (*SearchResponse, error) {
 	client := &http.Client{}
 
 	req, err := http.NewRequest("GET", SINGLE_TERM_SEARCH_URL+packageName, nil)
@@ -46,7 +46,7 @@ func SearchPackage(packageName string) (*results, error) {
 		return nil, fmt.Errorf("Failed to fetch results. Status code %d\n", resp.StatusCode)
 	}
 
-	var results results
+	var results SearchResponse
 	if err := json.NewDecoder(resp.Body).Decode(&results); err != nil {
 		return nil, err
 	}
